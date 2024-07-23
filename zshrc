@@ -1,6 +1,15 @@
 # set to .bash_profile for login shells
 # [[ -r ~/.bashrc ]] && . ~/.bashrc
 
+# copy to .bashrc for change the shell to zsh
+# to change the shell to zsh, without changing the default shell(or no permission to change the default shell)
+# check if PS1(Primary Prompt String) is set, if not, it's a non-interactive shell
+# only set the shell to zsh for interactive shell
+# if [ -n "$PS1" ]; then
+#     export SHELL=`which zsh`
+#     exec "$SHELL" -l
+# fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
