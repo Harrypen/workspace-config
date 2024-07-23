@@ -40,7 +40,8 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     git \
     vim \
-    htop \
+    htop \ 
+    tree \
     zsh \
     # 安装 SSH 服务
     openssh-server \

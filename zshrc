@@ -74,7 +74,7 @@ ZSH_THEME="crcandy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
-plugins=(git zsh-history-substring-search zsh-completions zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(git sudo zsh-history-substring-search zsh-completions zsh-syntax-highlighting zsh-autosuggestions)
 source ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
 
