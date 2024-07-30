@@ -43,6 +43,7 @@ RUN apt-get update && apt-get install -y \
     htop \ 
     tree \
     zsh \
+    rsync \
     # 安装 SSH 服务
     openssh-server \
     # 安装 Cron 服务
