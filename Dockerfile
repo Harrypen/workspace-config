@@ -44,6 +44,7 @@ RUN apt-get update && apt-get install -y \
     tree \
     zsh \
     rsync \
+    tmux \
     # 安装 SSH 服务
     openssh-server \
     # 安装 Cron 服务
@@ -93,6 +94,9 @@ RUN git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CU
 # set zsh config
 RUN cp /root/.zshrc /root/.zshrc.bak
 COPY zshrc /root/.zshrc
+
+# 设置 tmux 配置
+COPY tmux.conf /root/.tmux.conf
 
 # 安装 conda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
