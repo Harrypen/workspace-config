@@ -1,7 +1,9 @@
 # docker buildx build --platform linux/amd64,linux/arm64 -t registry.cn-wulanchabu.aliyuncs.com/personal-pan/workspace --push .
 
-# 使用 Debian 11 (Bullseye) 官方基础镜像
-FROM debian:bullseye-slim
+# # 使用 Debian 11 (Bullseye) 官方基础镜像
+# FROM debian:bullseye-slim
+# 更换为 Ubuntu 22.04 LTS
+FROM ubuntu:22.04
 
 WORKDIR /root
 
@@ -12,25 +14,36 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
     ca-certificates \
+    curl \
     gnupg \
-    dirmngr \
     lsb-release \
-    bzip2 \ 
-    --fix-missing \
-    && rm -rf /var/lib/apt/lists/*
+    software-properties-common \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 先备份原有的源
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
-# 添加阿里云的 Debian 源
-RUN echo "deb https://mirrors.aliyun.com/debian/ bullseye main non-free contrib" > /etc/apt/sources.list \
-    && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye main non-free contrib" >> /etc/apt/sources.list \
-    && echo "deb https://mirrors.aliyun.com/debian-security/ bullseye-security main" >> /etc/apt/sources.list \
-    && echo "deb-src https://mirrors.aliyun.com/debian-security/ bullseye-security main" >> /etc/apt/sources.list \
-    && echo "deb https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib" >> /etc/apt/sources.list \
-    && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib" >> /etc/apt/sources.list \
-    && echo "deb https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib" >> /etc/apt/sources.list \
-    && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib" >> /etc/apt/sources.list
-    
+# # 添加阿里云的 Debian 源
+# RUN echo "deb https://mirrors.aliyun.com/debian/ bullseye main non-free contrib" > /etc/apt/sources.list \
+#     && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye main non-free contrib" >> /etc/apt/sources.list \
+#     && echo "deb https://mirrors.aliyun.com/debian-security/ bullseye-security main" >> /etc/apt/sources.list \
+#     && echo "deb-src https://mirrors.aliyun.com/debian-security/ bullseye-security main" >> /etc/apt/sources.list \
+#     && echo "deb https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib" >> /etc/apt/sources.list \
+#     && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib" >> /etc/apt/sources.list \
+#     && echo "deb https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib" >> /etc/apt/sources.list \
+#     && echo "deb-src https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib" >> /etc/apt/sources.list
+
+# 添加阿里云的 Ubuntu 源
+RUN echo "deb https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" > /etc/apt/sources.list
+RUN echo "deb-src https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs) main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "# deb https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "# deb-src https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-backports main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src https://mirrors.aliyun.com/ubuntu/ $(lsb_release -cs)-backports main restricted universe multiverse" >> /etc/apt/sources.list
+RUN apt update
 
 # 更新软件源列表并安装常用软件
 RUN apt-get update && apt-get install -y \
@@ -50,19 +63,17 @@ RUN apt-get update && apt-get install -y \
     # 安装 Cron 服务
     cron \
     sudo \ 
-    --fix-missing \
-    # 清理缓存，减少镜像大小
-    && rm -rf /var/lib/apt/lists/*
-
+    --fix-missing 
 
 # 安装 python
-RUN apt-get update && apt-get install -y python3 python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y python3 python3-pip
 
 # 安装OpenJDK 17
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
-    apt-get clean && \
+    apt-get install -y openjdk-17-jdk 
+
+# 清理缓存，减少镜像大小
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # 设置时区
